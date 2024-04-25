@@ -10,7 +10,8 @@ dependencies:
   flutter:
     sdk: flutter
   go_router: ^13.2.4
-  surf_lint_rules: ^1.3.0
+  surf_lint_rules: ^3.0.0
+  equatable: ^2.0.5
 
 dev_dependencies:
   flutter_test:
