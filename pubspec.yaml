@@ -16,12 +16,14 @@ dependencies:
   generator:
     path: lib/features/generator
   equatable: ^2.0.5
+  logger: ^2.5.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   integration_test:
     sdk: flutter
+  test: ^1.25.8
 
 flutter:
   uses-material-design: true

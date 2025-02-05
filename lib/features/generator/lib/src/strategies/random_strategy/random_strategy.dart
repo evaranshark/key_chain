@@ -4,16 +4,23 @@ import 'package:generator/src/models/generation_strategy.dart';
 import 'package:generator/src/models/password_config.dart';
 
 class RandomGenerationStrategy implements GenerationStrategy {
-  final int length;
-
   final String _lowerCaseSymbols = 'abcdefghijklmnopqrstuvwxyz';
   final String _upperCaseSymbols = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   final String _digits = '0123456789';
-  final String _symbols = '!@#%^&*()-_=+[{]}|;:,<.>/?';
+  final String _symbols = '!@#%^&*()-_=+[{]}:<.>/?';
+
+  int _length;
 
   RandomGenerationStrategy({
-    required this.length,
-  }) : assert(length > 8 && length <= 30);
+    int length = 12,
+  })  : assert(length >= 8 && length <= 30),
+        _length = length;
+
+  void updateLength({required int length}) {
+    assert(length >= 8 && length <= 30);
+    _length = length;
+  }
+
   @override
   String generate({
     required GeneratorConfiguration configuration,
@@ -35,7 +42,7 @@ class RandomGenerationStrategy implements GenerationStrategy {
     }
 
     return String.fromCharCodes(Iterable.generate(
-      length,
+      _length,
       (_) => chars.codeUnitAt(random.nextInt(chars.length)),
     ));
   }

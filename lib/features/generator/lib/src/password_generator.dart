@@ -1,8 +1,8 @@
 import 'package:generator/src/models/generation_strategy.dart';
 import 'package:generator/src/models/password_config.dart';
 
-abstract class PasswordGenerator {
-  PasswordGenerator();
+abstract interface class IPasswordGenerator {
+  IPasswordGenerator();
 
   String generate({
     required GeneratorConfiguration configuration,
@@ -10,7 +10,7 @@ abstract class PasswordGenerator {
   });
 }
 
-class RandomPasswordGenerator extends PasswordGenerator {
+class PasswordGeneratorImpl implements IPasswordGenerator {
   @override
   String generate({
     required GeneratorConfiguration configuration,

@@ -4,7 +4,7 @@ class GeneratorConfiguration {
   final bool useDigits;
   final bool useSymbols;
 
-  GeneratorConfiguration({
+  const GeneratorConfiguration({
     required this.useCapitalLetters,
     required this.useLowerCaseLetters,
     required this.useDigits,
