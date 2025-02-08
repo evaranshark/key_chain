@@ -17,8 +17,13 @@ dependencies:
     path: lib/features/generator
   equatable: ^2.0.5
   logger: ^2.5.0
+  drift: ^2.24.0
+  drift_flutter: ^0.2.4
+  flutter_bloc: ^9.0.0
 
 dev_dependencies:
+  build_runner: ^2.4.14
+  drift_dev: ^2.24.0
   flutter_test:
     sdk: flutter
   integration_test:

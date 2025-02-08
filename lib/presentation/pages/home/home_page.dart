@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:generator/generator.dart';
 import 'package:generator/src/strategies/random_strategy/random_strategy.dart';
 import 'package:go_router/go_router.dart';
@@ -11,11 +14,43 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: _Form(),
-      ),
-    );
+    return FutureBuilder<DictionaryProvider>(future: () {
+      final completer = Completer<DictionaryProvider>();
+      final _provider = DictionaryProviderImpl(
+        repository: DictionaryRepository(),
+      );
+      _provider.load().then((_) => completer.complete(_provider));
+      return completer.future;
+    }(), builder: (context, snapshot) {
+      if (snapshot.hasData) {
+        return MultiRepositoryProvider(
+          providers: [
+            RepositoryProvider<MemorableStrategy>(
+              create: (context) => MemorableStrategy(
+                dictionaryProvider: snapshot.data!,
+              ),
+            ),
+          ],
+          child: const Scaffold(
+            body: Center(
+              child: _Form(),
+            ),
+          ),
+        );
+      }
+      if (snapshot.hasError) {
+        return Scaffold(
+          body: Center(
+            child: Text('Error'),
+          ),
+        );
+      }
+      return Scaffold(
+        body: Center(
+          child: Text('Loading...'),
+        ),
+      );
+    });
   }
 }
 
@@ -40,12 +75,31 @@ class _FormState extends State<_Form> {
 
   late int length;
 
-  final strategy = RandomGenerationStrategy();
+  late final GenerationStrategy strategy;
+
+  final _randomStrat = RandomGenerationStrategy();
+  late final MemorableStrategy _memorableStart;
+
+  String pass = '';
+
+  Future<void> _updatePass() async {
+    pass = await services.get<IPasswordGenerator>().generate(
+          configuration: GeneratorConfiguration(
+            useCapitalLetters: true,
+            useLowerCaseLetters: true,
+            useDigits: useDigits,
+            useSymbols: useSymbols,
+          ),
+          strategy: strategy,
+        );
+  }
 
   @override
   void initState() {
     super.initState();
     length = minLength.floor();
+    _memorableStart = context.read<MemorableStrategy>();
+    strategy = _memorableStart;
   }
 
   @override
@@ -53,39 +107,40 @@ class _FormState extends State<_Form> {
     return Column(
       children: [
         Text(
-          services.get<IPasswordGenerator>().generate(
-                configuration: GeneratorConfiguration(
-                  useCapitalLetters: true,
-                  useLowerCaseLetters: true,
-                  useDigits: useDigits,
-                  useSymbols: useSymbols,
-                ),
-                strategy: strategy,
-              ),
+          pass,
         ),
+        Text('Actual length is ${pass.length}'),
         _LengthField(
-            length: length,
-            minLength: minLength,
-            maxLength: maxLength,
-            divisions: divisions,
-            onChanged: onLengthChanged),
+          length: length,
+          minLength: minLength,
+          maxLength: maxLength,
+          divisions: divisions,
+          onChanged: onLengthChanged,
+        ),
         SwitchListTile.adaptive(
           value: useDigits,
-          onChanged: (value) {
-            setState(() {
-              useDigits = value;
-            });
+          onChanged: (value) async {
+            useDigits = value;
+            await _updatePass();
+            setState(() {});
           },
           title: const Text('Use digits'),
         ),
         SwitchListTile.adaptive(
           value: useSymbols,
-          onChanged: (value) {
-            setState(() {
-              useSymbols = value;
-            });
+          onChanged: (value) async {
+            useSymbols = value;
+            await _updatePass();
+            setState(() {});
           },
           title: const Text('Use symbols'),
+        ),
+        OutlinedButton(
+          onPressed: () async {
+            await _updatePass();
+            setState(() {});
+          },
+          child: const Text('Generate'),
         ),
         Spacer(),
         Text(
@@ -95,11 +150,13 @@ class _FormState extends State<_Form> {
     );
   }
 
-  void onLengthChanged(double value) {
-    setState(() {
-      length = value.floor();
-      strategy.updateLength(length: length);
-    });
+  Future<void> onLengthChanged(double value) async {
+    length = value.floor();
+    if (strategy is RandomGenerationStrategy) {
+      (strategy as RandomGenerationStrategy).updateLength(length: length);
+    }
+    await _updatePass();
+    setState(() {});
   }
 }
 

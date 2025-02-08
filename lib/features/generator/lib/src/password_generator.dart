@@ -1,10 +1,12 @@
+import 'dart:async';
+
 import 'package:generator/src/models/generation_strategy.dart';
 import 'package:generator/src/models/password_config.dart';
 
 abstract interface class IPasswordGenerator {
   IPasswordGenerator();
 
-  String generate({
+  FutureOr<String> generate({
     required GeneratorConfiguration configuration,
     required GenerationStrategy strategy,
   });
@@ -12,7 +14,7 @@ abstract interface class IPasswordGenerator {
 
 class PasswordGeneratorImpl implements IPasswordGenerator {
   @override
-  String generate({
+  FutureOr<String> generate({
     required GeneratorConfiguration configuration,
     required GenerationStrategy strategy,
   }) {
