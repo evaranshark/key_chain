@@ -96,3 +96,34 @@ final class SpecSymSlash extends SpecialSymbol {
 final class SpecSymQuestionMark extends SpecialSymbol {
   const SpecSymQuestionMark() : super(get: '?');
 }
+
+extension RandomSpecial on Random {
+  SpecialSymbol nextSpecialSymbol() {
+    const symbols = [
+      SpecSymExclamationMark(),
+      SpecSymAtSign(),
+      SpecSymNumberSign(),
+      SpecSymPercentSign(),
+      SpecSymCaret(),
+      SpecSymAmpersand(),
+      SpecSymAsterisk(),
+      SpecSymLeftParenthesis(),
+      SpecSymRightParenthesis(),
+      SpecSymHyphen(),
+      SpecSymUnderscore(),
+      SpecSymEqualsSign(),
+      SpecSymPlusSign(),
+      SpecSymLeftBracket(),
+      SpecSymRightBracket(),
+      SpecSymLeftBrace(),
+      SpecSymRightBrace(),
+      SpecSymColon(),
+      SpecSymLessThanSign(),
+      SpecSymGreaterThanSign(),
+      SpecSymPeriod(),
+      SpecSymSlash(),
+      SpecSymQuestionMark(),
+    ];
+    return symbols[nextInt(symbols.length)];
+  }
+}

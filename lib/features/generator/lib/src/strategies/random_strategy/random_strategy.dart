@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:generator/src/models/generation_strategy.dart';
+import 'package:generator/src/models/password.dart';
 import 'package:generator/src/models/password_config.dart';
 
 class RandomGenerationStrategy implements GenerationStrategy {
@@ -22,7 +23,7 @@ class RandomGenerationStrategy implements GenerationStrategy {
   }
 
   @override
-  String generate({
+  Password generate({
     required GeneratorConfiguration configuration,
   }) {
     final random = Random.secure();
@@ -41,9 +42,10 @@ class RandomGenerationStrategy implements GenerationStrategy {
       chars += _symbols;
     }
 
-    return String.fromCharCodes(Iterable.generate(
+    final psw = String.fromCharCodes(Iterable.generate(
       _length,
       (_) => chars.codeUnitAt(random.nextInt(chars.length)),
     ));
+    return Password.fromString(string: psw);
   }
 }

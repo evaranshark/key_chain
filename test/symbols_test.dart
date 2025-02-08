@@ -1,4 +1,4 @@
-import 'package:key_chain/features/symbols/symbols.dart';
+import 'package:key_chain/features/generator/lib/src/symbols/symbols.dart';
 import 'package:test/test.dart';
 
 void main() {

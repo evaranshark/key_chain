@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:generator/generator.dart';
 import 'package:generator/src/strategies/random_strategy/random_strategy.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:key_chain/main.dart';
 
 class HomePage extends StatelessWidget {
@@ -80,7 +81,7 @@ class _FormState extends State<_Form> {
   final _randomStrat = RandomGenerationStrategy();
   late final MemorableStrategy _memorableStart;
 
-  String pass = '';
+  Password pass = Password.fromString(string: '');
 
   Future<void> _updatePass() async {
     pass = await services.get<IPasswordGenerator>().generate(
@@ -106,10 +107,27 @@ class _FormState extends State<_Form> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(
-          pass,
+        Text.rich(
+          TextSpan(
+            children: pass.symbols
+                .map(
+                  (s) => TextSpan(
+                    text: s.get,
+                    style: TextStyle(
+                        color: switch (s) {
+                      Letter() => Colors.black,
+                      Digit() => Colors.blue,
+                      Symbol() => Colors.pink,
+                    }),
+                  ),
+                )
+                .toList(),
+          ),
+          style: GoogleFonts.notoSansMono(
+            fontSize: 48,
+          ),
         ),
-        Text('Actual length is ${pass.length}'),
+        Text('Actual length is ${pass.get.length}'),
         _LengthField(
           length: length,
           minLength: minLength,

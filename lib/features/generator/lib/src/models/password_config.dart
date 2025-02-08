@@ -9,5 +9,5 @@ class GeneratorConfiguration {
     required this.useLowerCaseLetters,
     required this.useDigits,
     required this.useSymbols,
-  });
+  }) : assert(useCapitalLetters || useLowerCaseLetters);
 }
